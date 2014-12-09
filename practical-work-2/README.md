@@ -45,7 +45,7 @@ Objetivo: Obter o escalonamento das tarefas escalonáveis:
 
 Otimizações:
 
--Obter escalonamento com o menor custo a pagar pela nenergia ao longo do dia
+-Obter escalonamento com o menor custo a pagar pela energia ao longo do dia
 
 -Obter o consumo mais uniforme possivel com o intuito de baixar a potência contratada
 
