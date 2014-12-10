@@ -8,7 +8,7 @@ Algumas anotações:
 
 Aparelhos escalonáveis: é possível definir uma janela temporal para seu funcionamento (ex máquinas de lavar, fornos, ou termoacumuladores)
 
-Aparelhos não escalonáveis: impossível de definir um periudo de funcionamento
+Aparelhos não escalonáveis: impossível de definir um periodo de funcionamento
 
 
 Tarefas: 
@@ -55,5 +55,21 @@ Aparelhos não escalonáveis: Frigorífico, Congelador, Arca frigorífica, Telev
 
 Aparelhos escalonáveis: Máquina de lavar louça, Máquina de lavar roupa, Forno, Termoacumulador, Aquecedor
 
+
+
+Tarefa(NomeEquipamento,Baseline,Deadline,Duracao,CurvaConsumo,Escalonável)
+
+Equipamento(NomeEquipamento,CurvaConsumo,Escalonavel)
+
+Escalonável(true or false)
+
+
+
+Bibliografia:
+
+http://www.pouparmelhor.com/praticas/consumo-mais-detalhado-de-uma-maquina-de-lavar-roupa/
+
+
+http://www.siemens-home.pt/Files/SiemensNew/Pt/pt/2012/Cat%C3%A1logos/Siemens_cat%C3%A1logo%20loi%C3%A7a_Abril_2012.pdf
 
 
