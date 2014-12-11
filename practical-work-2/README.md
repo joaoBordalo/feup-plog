@@ -57,9 +57,9 @@ Aparelhos escalonáveis: Máquina de lavar louça, Máquina de lavar roupa, Forn
 
 
 
-Tarefa(NomeEquipamento,Baseline,Deadline,Duracao,CurvaConsumo,Escalonável)
+Tarefa(Aparelho(id,NomeEquipamento,CurvaConsumo,Escalonavel),Baseline,Deadline,Duracao)
 
-Equipamento(NomeEquipamento,CurvaConsumo,Escalonavel)
+Aparelho(id,NomeEquipamento,CurvaConsumo,Escalonavel)
 
 Escalonável(true or false)
 
@@ -71,5 +71,11 @@ http://www.pouparmelhor.com/praticas/consumo-mais-detalhado-de-uma-maquina-de-la
 
 
 http://www.siemens-home.pt/Files/SiemensNew/Pt/pt/2012/Cat%C3%A1logos/Siemens_cat%C3%A1logo%20loi%C3%A7a_Abril_2012.pdf
+
+
+http://www.edpsu.pt/pt/particulares/tarifasehorarios/BTN/Pages/TarifasBTNate20.7kVA.aspx
+
+
+http://www.pouparmelhor.com/praticas/bi-horario-vs-tri-horario/
 
 
