@@ -12,9 +12,20 @@
 tarefa(1,aparelho(1,NomeEquipamento,CurvaConsumo,Escalonavel),Baseline,Deadline,Duracao)
 
 
+%task(-Baseline,-Duracao,-Deadline,-Consumo,-IdMaquina).
+
+
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %tarefas(+Atual_tarefa,+Total_tarefas,-Lista_tarefas)
+
+
+create_tasks(Tasks,CurrenTask,NumberTasks):-
+		append(Tasks,[task(_,_,_,_)])
 
 tarefas(Total_tarefas,Total_Tarefas,_).
 tarefas(Atual_tarefa,Total_tarefas,Lista_tarefas):- 	

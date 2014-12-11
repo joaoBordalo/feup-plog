@@ -4,9 +4,9 @@
 
 %preco_tarifa(+IdTarifa,idPeriodo,+NomePeríodo,+Preco)
 
-preco_tarifa(1,1,'Hora de Ponta',0.2066). % Euros/kWh 
-preco_tarifa(1,2,'Hora de Cheia', 0.1642).
-preco_tarifa(1,3,'Hora de Vazia', 0.0955).
+preco_tarifa(1,1,'Hora de Ponta',3). % Euros/kWh 
+preco_tarifa(1,2,'Hora de Cheia', 2).
+preco_tarifa(1,3,'Hora de Vazia', 1).
 
 
 
@@ -19,7 +19,7 @@ tarifa_horario(12,18.5,1,2).
 tarifa_horario(18.5,21,1,1).
 tarifa_horario(21,24,1,2).
 
-timelineDivison([0,7,9.5,12,18.5,21,24]).
+%timelineDivison=[0,7,9.5,12,18.5,21,24].
 
 %preco_timeline(-TimeLineCost,+CurrentTime,+Time,It)  no início CurrentTime = 0 e Time = 24, It vai percorrer a lista timelineDivison e tem de começar por 1
 

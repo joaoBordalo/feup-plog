@@ -57,11 +57,11 @@ Aparelhos escalonáveis: Máquina de lavar louça, Máquina de lavar roupa, Forn
 
 
 
-Tarefa(Aparelho(id,NomeEquipamento,CurvaConsumo,Escalonavel),Baseline,Deadline,Duracao)
+tarefa(Id,aparelho(id,NomeEquipamento,CurvaConsumo,Escalonavel),Baseline,Deadline,Duracao)
 
-Aparelho(id,NomeEquipamento,CurvaConsumo,Escalonavel)
+aparelho(id,NomeEquipamento,CurvaConsumo,Escalonavel)
 
-Escalonável(true or false)
+Escalonável: pode ser 0(false) ou 1(true)
 
 
 
