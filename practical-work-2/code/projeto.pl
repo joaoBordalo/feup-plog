@@ -80,8 +80,30 @@ limit(X).
 
 
 
-settingNotSchedulableTasks(TasksNotSchedulable,AllTasks,RemainingPowerTimeTable):-
+settingNotSchedulableTasks([TaskNotSchedulable|Rest],AllTasks,RemainingPowerTimeTable).
 
+
+
+
+
+
+
+
+% ListaInicioTarefas deve já ter as restricoes
+
+escalonamento(Tarefas,ListaInicioTarefas,ListaFimTarefas,ListaConumoTarefas,EnergiaMaximaRestante):-
+
+		domain(ListaInicioTarefas,0,23),
+		domain(ListaFimTarefas,1,24),
+
+		LimiteEnergetico is 0..EnergiaMaximaRestante,
+
+		cumulatives(Tarefas,limit(LimiteEnergetico)),
+
+		append(ListaInicioTarefas,ListaFimTarefas, Vars1),
+		append(Vars1,[LimiteEnergetico], Vars),
+		
+		labeling([minimize(LimiteEnergetico)],Vars).
 
 
 
