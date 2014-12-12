@@ -9,7 +9,7 @@
 
 %tarefa(+Id,aparelho(+Id,+NomeEquipamento,+CurvaConsumo,+Escalonavel),+Baseline,+Deadline,+Duracao).
 
-tarefa(1,aparelho(1,NomeEquipamento,CurvaConsumo,Escalonavel),Baseline,Deadline,Duracao)
+tarefa(1,aparelho(1,NomeEquipamento,CurvaConsumo,Escalonavel),Baseline,Deadline,Duracao).
 
 
 %task(-Baseline,-Duracao,-Deadline,-Consumo,-IdMaquina).

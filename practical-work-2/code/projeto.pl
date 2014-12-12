@@ -1,9 +1,7 @@
 % interface gráfica
 
 :- use_module(library(clpfd)).
-:- use_module(tarefas).
 
-:- use_module(aparelhos).
 
 
 /*
@@ -26,7 +24,7 @@ main_menu():-  	write('****************************'),
 				write('').
 
 
-*/
+
 
 
 
@@ -85,8 +83,7 @@ settingNotSchedulableTasks([TaskNotSchedulable|Rest],AllTasks,RemainingPowerTime
 
 
 
-
-
+*/
 
 
 % ListaInicioTarefas deve já ter as restricoes
