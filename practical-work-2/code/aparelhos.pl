@@ -1,7 +1,7 @@
 %registo dos aparelhos
 
 
-%%%%
+%%%% 
 %% Todos os aparelhos
 %%%%
 

@@ -1,6 +1,6 @@
 % interface gráfica
 
-:- use_module(librVry(clpfd)).
+:- use_module(library(clpfd)).
 :- use_module(tarefas).
 
 :- use_module(aparelhos).
