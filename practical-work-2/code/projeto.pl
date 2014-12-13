@@ -144,23 +144,23 @@ calcula_custo_total(LCustos,[task(S,_,_,C,_)|NextTask],CustoActual,CustoTotal) :
 		
 		
 		
-calcula_soma_custos([],CustoMaximo,CustoMaximo).
-calcula_soma_custos([C|NextC],CustoActual,CustoMaximo) :-
+		calculaSomaCustos([],CustoMaximo,CustoMaximo).
+		calculaSomaCustos([C|NextC],CustoActual,CustoMaximo) :-
 		CustoActual1 is CustoActual + C,
-		calcula_soma_custos(NextC,CustoActual1,CustoMaximo).
+		calculaSomaCustos(NextC,CustoActual1,CustoMaximo).
 		
-calcula_consumo_total([],ConsumoTotal,ConsumoTotal).
-calcula_consumo_total([task(_,_,_,C,_)|NextTask],ConsumoActual,ConsumoTotal) :-
+calculaConsumoTotal([],ConsumoTotal,ConsumoTotal).
+calculaConsumoTotal([task(_,_,_,C,_)|NextTask],ConsumoActual,ConsumoTotal) :-
 		ConsumoActual1 is ConsumoActual + C,
-		calcula_consumo_total(NextTask,ConsumoActual1,ConsumoTotal).
+		calculaConsumoTotal(NextTask,ConsumoActual1,ConsumoTotal).
 		
-min_list([H|T], Min) :-
-    min_list(T, H, Min).
+minList([H|T], Min) :-
+minList(T, H, Min).
  
-min_list([], Min, Min).
-min_list([H|T], Min0, Min) :-
+minList([], Min, Min).
+minList([H|T], Min0, Min) :-
     Min1 is min(H, Min0),
-    min_list(T, Min1, Min).
+    minList(T, Min1, Min).
 
 
 %%Sem considerar os não escalonaveis
@@ -173,10 +173,10 @@ escalonamentoPeloCustoMinimo(ListaInicioTarefas,ListaFimTarefas,Tarefas, ListaCu
 		restricaoTempo(ListaInicioTarefas,ListaInicioTarefasRestricoes,0),
 		restricaoTempo(ListaFimTarefas,ListaFimTarefasRestricoes,1),
 
-		calcula_soma_custos(ListaCustos,0,CustoMaximo),
-		calcula_consumo_total(Tasks,0,ConsumoTotal),
+		calculaSomaCustos(ListaCustos,0,CustoMaximo),
+		calculaConsumoTotal(Tarefas,0,ConsumoTotal),
 		CustoTotal is CustoMaximo * ConsumoTotal,
-		min_list(LCustos,CustoMinimo),
+		minList(ListaCustos,CustoMinimo),
 
 		CustoTotal #= ConsumoCusto,
 
@@ -195,7 +195,7 @@ escalonamentoPeloCustoMinimo(ListaInicioTarefas,ListaFimTarefas,Tarefas, ListaCu
 
 
 
-		
+
 
 
 
