@@ -98,10 +98,8 @@ restricaoTempo([Baseline|NextBase],[LS|NextS],1) :-
 		LS #=<Baseline,
 		restricaoTempo(NextBase,NextS,1).
 
-
-
-% ListaInicioTarefas deve já ter as restricoes
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %ListaInicioTarefas= lista dos tempos iniciais das tarefas em que o primeiro elemento é a tarefa 1( nao implica que seja a primeira tarefa a ser feita)
 %ListaFimTarefas=lista dos tempos finais das tarefas em que o primeiro elemento é a tarefa 1( nao implica que seja a primeira tarefa a ser feita)
@@ -109,13 +107,11 @@ restricaoTempo([Baseline|NextBase],[LS|NextS],1) :-
 %PotenciaContratada 
 
 
-%%Sem considerar os não escalonaveis
-escalonamentoPorConsumoEnergetico(ListaInicioTarefas,ListaFimTarefas,Tarefas,PotenciaContratada):-
+% Sem considerar os não escalonaveis caso o valor passado em PotenciaContratadaRestante = PotenciaContratada se nao,
+% PotenciaContratadaRestante= PotenciaContratada-Potencia consumida pelas tarefas nao escalonaveis,
+% Assume-se que o pior caso é as tarefas nao escalonaveis terem uma duracao de 24h, assim sendo, a PotenciaRestante é um valor constante ao longo do dia
 
-%passar para uma lista as tasks
-%passar para uma lista o tempo inicial de cada task
-%passar para uma lista o tempo final de cada task
-%passar para uma lista o custo de cada task
+escalonamentoPorConsumoEnergetico(ListaInicioTarefas,ListaFimTarefas,Tarefas,PotenciaContratadaRestante):-
 
 		domain(ListaInicioTarefas,0,23),
 		domain(ListaFimTarefas,1,24),
@@ -124,7 +120,7 @@ escalonamentoPorConsumoEnergetico(ListaInicioTarefas,ListaFimTarefas,Tarefas,Pot
 		restricaoTempo(ListaInicioTarefas,ListaInicioTarefasRestricoes,0),
 		restricaoTempo(ListaFimTarefas,ListaFimTarefasRestricoes,1),
 
-		LimiteEnergetico is 0..PotenciaContratada,
+		LimiteEnergetico is 0..PotenciaContratadaRestante,
 
 		cumulative(Tarefas,limit(LimiteEnergetico)),
 
@@ -133,38 +129,41 @@ escalonamentoPorConsumoEnergetico(ListaInicioTarefas,ListaFimTarefas,Tarefas,Pot
 		
 		labeling([minimize(LimiteEnergetico)],Vars).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+calculaCustoTotal(_,[],CustoTotal,CustoTotal).
 
-calcula_custo_total(_,[],CustoTotal,CustoTotal).
-calcula_custo_total(LCustos,[task(S,_,_,C,_)|NextTask],CustoActual,CustoTotal) :-
-		element(S,LCustos,Custo),
-		Mult #= Custo*C,
-		CustoActual1 #= CustoActual + Custo*C,
-		calcula_custo_total(LCustos,NextTask,CustoActual1,CustoTotal).
+calculaCustoTotal(LCustos,[task(S,_,_,C,_)|NextTask],CustoActual,CustoTotal) :-
+	element(S,LCustos,Custo),
+	Mult #= Custo*C,
+	CustoActual1 #= CustoActual + Custo*C,
+	calculaCustoTotal(LCustos,NextTask,CustoActual1,CustoTotal).
 		
 		
-		
-		calculaSomaCustos([],CustoMaximo,CustoMaximo).
-		calculaSomaCustos([C|NextC],CustoActual,CustoMaximo) :-
-		CustoActual1 is CustoActual + C,
-		calculaSomaCustos(NextC,CustoActual1,CustoMaximo).
+calculaSomaCustos([],CustoMaximo,CustoMaximo).
+
+calculaSomaCustos([C|NextC],CustoActual,CustoMaximo) :-
+	CustoActual1 is CustoActual + C,
+	calculaSomaCustos(NextC,CustoActual1,CustoMaximo).
 		
 calculaConsumoTotal([],ConsumoTotal,ConsumoTotal).
+
 calculaConsumoTotal([task(_,_,_,C,_)|NextTask],ConsumoActual,ConsumoTotal) :-
-		ConsumoActual1 is ConsumoActual + C,
-		calculaConsumoTotal(NextTask,ConsumoActual1,ConsumoTotal).
+	ConsumoActual1 is ConsumoActual + C,
+	calculaConsumoTotal(NextTask,ConsumoActual1,ConsumoTotal).
 		
 minList([H|T], Min) :-
-minList(T, H, Min).
+	minList(T, H, Min).
  
 minList([], Min, Min).
+
 minList([H|T], Min0, Min) :-
     Min1 is min(H, Min0),
     minList(T, Min1, Min).
 
-
-%%Sem considerar os não escalonaveis
-escalonamentoPeloCustoMinimo(ListaInicioTarefas,ListaFimTarefas,Tarefas, ListaCusto):-
+% Para um Custo constante ao longo do tempo
+% Sem considerar os não escalonaveis
+escalonamentoPeloCustoMinimo(ListaInicioTarefas,ListaFimTarefas,Tarefas,PotenciaContratadaRestante, Custo):-
 
 		domain(ListaInicioTarefas,0,23),
 		domain(ListaFimTarefas,1,24),
@@ -173,15 +172,17 @@ escalonamentoPeloCustoMinimo(ListaInicioTarefas,ListaFimTarefas,Tarefas, ListaCu
 		restricaoTempo(ListaInicioTarefas,ListaInicioTarefasRestricoes,0),
 		restricaoTempo(ListaFimTarefas,ListaFimTarefasRestricoes,1),
 
-		calculaSomaCustos(ListaCustos,0,CustoMaximo),
+		calculaSomaCustos(Custo,0,CustoMaximo),
 		calculaConsumoTotal(Tarefas,0,ConsumoTotal),
 		CustoTotal is CustoMaximo * ConsumoTotal,
 		minList(ListaCustos,CustoMinimo),
 
+
+		%calculaCustoTotal(LCustos,Tasks,0,ConsumoCusto),
 		CustoTotal #= ConsumoCusto,
 
 
-		LimiteEnergetico is 0..ListaCusto,
+		LimiteEnergetico is 0..PotenciaContratadaRestante,
 
 		cumulative(Tarefas,limit(LimiteEnergetico)),
 
@@ -193,6 +194,9 @@ escalonamentoPeloCustoMinimo(ListaInicioTarefas,ListaFimTarefas,Tarefas, ListaCu
 		
 		labeling([minimize(CustoLimite)],Vars).
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
