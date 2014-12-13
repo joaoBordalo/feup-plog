@@ -1,9 +1,46 @@
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%                      %%%
 %%%    ESCALONAMENTOS    %%%
 %%%                      %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+calculaEmax(EMax,EMax,[]).
+calculaEmax(PotMax,EMax,[H|T]) :-
+		PotMaxNext is PotMax - H,
+		calculaEmax(PotMaxNext,EMax,T).
+
+
+separaTasks([],Tasks,Tasks,LS,LS,LE,LE).
+separaTasks([SubTask|Next],SubTasks,Tasks,ListaStarts,LS,ListaEnds,LE) :-
+		criaSubTask(SubTask,SubTasks,SubTasks1,ListaStarts,ListaStarts1,ListaEnds,ListaEnds1,_),
+		separaTasks(Next,SubTasks1,Tasks,ListaStarts1,LS,ListaEnds1,LE).
+		
+criaSubTask([],Tasks,Tasks,LS,LS,LE,LE,_).
+criaSubTask([Consumo|Next],ListaSubTasks,Tasks,ListaStarts,LS,ListaEnds,LE,S1) :-
+		append(ListaSubTasks,[task(S1,1,E1,Consumo,0)],ListaSubTasks1),
+		append(ListaStarts,[S1],ListaStarts1),
+		append(ListaEnds,[E1],ListaEnds1),
+		criaSubTask(Next,ListaSubTasks1,Tasks,ListaStarts1,LS,ListaEnds1,LE,E1).
+
+getLength([ ], 0).
+getLength([_|T],N) :- getLength(T,M), N  is  M+1.
+
+doWhile(BaselinesFinal,BaselinesFinal,_,DeadlinesFinal,DeadlinesFinal,_,Amount1) :- Amount1 =<0,!.
+doWhile(Baselines,BaselinesFinal,BaseLinesActuais,Deadlines,DeadlinesFinal,DeadLinesActuais,Amount) :-
+			append(Baselines,[BaseLinesActuais],Baselines1),
+			append(Deadlines,[DeadLinesActuais],Deadlines1),
+			Amount1 is Amount - 1,
+			doWhile(Baselines1,BaselinesFinal,BaseLinesActuais,Deadlines1,DeadlinesFinal,DeadLinesActuais,Amount1).
+
+geraLines(_,ListaBaseLinesFinal,ListaBaseLinesFinal,_,ListaDeadlinesFinal,ListaDeadlinesFinal,[]).
+geraLines([BaseLinesActuais|NextBaseline],BaseLines,ListaBaseLinesFinal,[DeadLinesActuais|NextDeadline],Deadlines,ListaDeadlinesFinal,[AmountSubtasks|NextAmount]):-
+		doWhile(BaseLines,BaseLines1,BaseLinesActuais,Deadlines,Deadlines1,DeadLinesActuais,AmountSubtasks),
+		geraLines(NextBaseline,BaseLines1,ListaBaseLinesFinal,NextDeadline,Deadlines1,ListaDeadlinesFinal,NextAmount).
+
+
 
 restricaoTempo([],[],_).
 
@@ -52,7 +89,6 @@ escalonamentoPorConsumoEnergetico(ListaInicioTarefas,ListaFimTarefas,Tarefas,Pot
 		% Mostrar Resultados
 		write('Lista de Principios:'),write(ListaInicioTarefasRestricoes),write('\n'),
 		write('Lista de Terminos:'),write(ListaFimTarefasRestricoes),write('\n'),
-		%write('Potencia Contratada:'),write(PotMax),write('\n'),
 		write('Potencia Maxima Recomendada:'),write(LimiteEnergetico),write('\n'),
 		write('Lista de Tarefas:'),write(Tarefas),write('\n').
 
@@ -162,7 +198,6 @@ escalonamentoPorConsumoEnergeticoComPotenciaContratadaRestanteVariavel(ListaInic
 		% Mostrar Resultados
 		write('Lista de Principios:'),write(ListaInicioTarefasRestricoes),write('\n'),
 		write('Lista de Terminos:'),write(ListaFimTarefasRestricoes),write('\n'),
-		%write('Potencia Contratada:'),write(PotMax),write('\n'),
 		write('Potencia Maxima Recomendada:'),write(LimiteEnergetico),write('\n'),
 		write('Lista de Tarefas:'),write(Tarefas),write('\n').
 

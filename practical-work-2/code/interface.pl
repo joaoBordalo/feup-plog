@@ -47,7 +47,7 @@ nl, intro, nl, nl,
 	write('10 - Importar config de preco de energia do ficheiro'),nl,
 	write('11 - Calcular Otimizacao do Custo'),nl,
 	write('0 - Sair'),nl,
-	repeat, read(Op), Op >= 0, Op =< 12,!,
+	repeat, read(Op), Op >= 0, Op =< 11,!,
 	menu(Op), repeat, skip_line, get_code(_), startmenu.
 
 
@@ -116,7 +116,13 @@ menu(6):-
 	!.
 
 menu(7):-
-	gera_escalonamento.
+	write('1 - Escalonamento Por Consumo Energetico'), nl,
+	write('2 - Escalonamento Pelo Custo Minimo'), nl,
+	write('3 - Escalonamento Por Consumo Energetico Com Potencia Contratada Restante Variavel'),nl,
+	write('4 - Escalonamento Pelo Custo Minimo Com Potencia Contratada Restante Variavel'),nl,
+	write('0 - Voltar ao menu anterior'),nl,
+	repeat, read(Op), Op >= 0, Op =< 4,!,
+	menu_escal(Op), repeat, skip_line, get_code(_), menu(7).
 
 menu(8):- 
 	retractall(nescalonavel(_,_)),
@@ -186,10 +192,228 @@ menu_disp(2):-
 	assert(nescalonavel(Nome,Consumo)),
 	write('Dispositivo não Escalonável '),write(Nome), write(' com consumo de '), write(Consumo),write(' adicionado com sucesso à base de conhecimento.').	
 	
-	
-	
-	
+
+
 %%-------------------------------------------------------------------------------------------------------------------------------------
+
+%%Menu dos escalonamentos
+
+menu_escal(0):-startmenu.
+
+
+menu_escal(1):-
+
+findall(Subtarefas,tarefa(_,_,_,_,_, Subtarefas),ListaConsumos),
+
+		(	foreach(T,ListaConsumos),
+			foreach(A,AmountSubtasks),
+			count(I,1,N)
+			do
+				getLength(T,A),
+				true
+		),
+		
+		findall(Baseline,tarefa(_,_,Baseline,_,_,_),ListaBaselines),
+		(	foreach(T,ListaBaselines),
+			count(I,1,N)
+			do
+				true
+		),
+		
+		findall(Deadline,tarefa(_,_,_,Deadline,_,_),ListaDeadlines),
+		(	foreach(T,ListaDeadlines),
+			count(I,1,N)
+			do
+				true
+		),
+		geraLines(ListaBaselines,_,Baselines,ListaDeadlines,_,Deadlines,AmountSubtasks),
+		write(Baselines),write('\n'),
+		write(Deadlines),write('\n'),
+		
+		findall(subtask(_,_,_,_,_),subtask(_,_,_,_,_),ListaSubT),	%% numero de subtarefas existentes
+		(	foreach(_,ListaSubT),
+			count(I,1,NS)
+			do
+				true
+		),
+		
+		length(ListaInicioTarefas,NS),
+		length(ListaFimTarefas,NS),
+		
+		separaTasks(ListaConsumos,_,Tasks,_,ListaInicioTarefas,_,ListaFimTarefas),
+
+
+		cria_lista_n_escalonavel(LNE),
+		
+		get_pot_max(PotMax),
+		calculaEmax(PotMax,PotenciaContratadaRestante,LNE),
+
+
+escalonamentoPorConsumoEnergetico(ListaInicioTarefas,ListaFimTarefas,Tarefas,PotenciaContratadaRestante).
+
+menu_escal(2):-
+
+		get_custos([Custos|_]),
+		
+		findall(Subtarefas,tarefa(_,_,_,_,_, Subtarefas),ListaConsumos),
+		(	foreach(T,ListaConsumos),
+			foreach(A,AmountSubtasks),
+			count(I,1,N)
+			do
+				getLength(T,A),
+				true
+		),
+		
+		findall(Baseline,tarefa(_,_,Baseline,_,_,_),ListaBaselines),
+		(	foreach(T,ListaBaselines),
+			count(I,1,N)
+			do
+				true
+		),
+		
+		findall(Deadline,tarefa(_,_,_,Deadline,_,_),ListaDeadlines),
+		(	foreach(T,ListaDeadlines),
+			count(I,1,N)
+			do
+				true
+		),
+		geraLines(ListaBaselines,_,Baselines,ListaDeadlines,_,Deadlines,AmountSubtasks),
+		write(Baselines),write('\n'),
+		write(Deadlines),write('\n'),
+		
+		findall(subtask(_,_,_,_,_),subtask(_,_,_,_,_),ListaSubT),	%% numero de subtarefas existentes
+		(	foreach(_,ListaSubT),
+			count(I,1,NS)
+			do
+				true
+		),
+		
+		length(ListaInicioTarefas,NS),
+		length(ListaFimTarefas,NS),
+		
+		separaTasks(ListaConsumos,_,Tasks,_,ListaInicioTarefas,_,ListaFimTarefas),
+
+		cria_lista_n_escalonavel(LNE),
+		
+		get_pot_max(PotMax),
+		calculaEmax(PotMax,PotenciaContratadaRestante,LNE),
+
+
+		escalonamentoPeloCustoMinimo(ListaInicioTarefas,ListaFimTarefas,Tarefas,PotenciaContratadaRestante, Custo).
+
+menu_escal(3):-
+
+findall(Subtarefas,tarefa(_,_,_,_,_, Subtarefas),ListaConsumos),
+
+		(	foreach(T,ListaConsumos),
+			foreach(A,AmountSubtasks),
+			count(I,1,N)
+			do
+				getLength(T,A),
+				true
+		),
+		
+		findall(Baseline,tarefa(_,_,Baseline,_,_,_),ListaBaselines),
+		(	foreach(T,ListaBaselines),
+			count(I,1,N)
+			do
+				true
+		),
+		
+		findall(Deadline,tarefa(_,_,_,Deadline,_,_),ListaDeadlines),
+		(	foreach(T,ListaDeadlines),
+			count(I,1,N)
+			do
+				true
+		),
+		geraLines(ListaBaselines,_,Baselines,ListaDeadlines,_,Deadlines,AmountSubtasks),
+		write(Baselines),write('\n'),
+		write(Deadlines),write('\n'),
+		
+		findall(subtask(_,_,_,_,_),subtask(_,_,_,_,_),ListaSubT),	%% numero de subtarefas existentes
+		(	foreach(_,ListaSubT),
+			count(I,1,NS)
+			do
+				true
+		),
+		
+		length(ListaInicioTarefas,NS),
+		length(ListaFimTarefas,NS),
+		
+		separaTasks(ListaConsumos,_,Tasks,_,ListaInicioTarefas,_,ListaFimTarefas),
+
+
+		cria_lista_n_escalonavel(LNE),
+		
+		get_pot_max(PotMax),
+		calculaListaEmax(PotMax,PotenciaContratadaRestante,LNE),
+
+escalonamentoPorConsumoEnergeticoComPotenciaContratadaRestanteVariavel(ListaInicioTarefas,ListaFimTarefas,Tarefas,ListaPotenciaContratadaRestante).
+
+menu_escal(4):-
+
+get_custos([Custos|_]),
+		
+		findall(Subtarefas,tarefa(_,_,_,_,_, Subtarefas),ListaConsumos),
+		(	foreach(T,ListaConsumos),
+			foreach(A,AmountSubtasks),
+			count(I,1,N)
+			do
+				getLength(T,A),
+				true
+		),
+		
+		findall(Baseline,tarefa(_,_,Baseline,_,_,_),ListaBaselines),
+		(	foreach(T,ListaBaselines),
+			count(I,1,N)
+			do
+				true
+		),
+		
+		findall(Deadline,tarefa(_,_,_,Deadline,_,_),ListaDeadlines),
+		(	foreach(T,ListaDeadlines),
+			count(I,1,N)
+			do
+				true
+		),
+		geraLines(ListaBaselines,_,Baselines,ListaDeadlines,_,Deadlines,AmountSubtasks),
+		write(Baselines),write('\n'),
+		write(Deadlines),write('\n'),
+		
+		findall(subtask(_,_,_,_,_),subtask(_,_,_,_,_),ListaSubT),	%% numero de subtarefas existentes
+		(	foreach(_,ListaSubT),
+			count(I,1,NS)
+			do
+				true
+		),
+		
+		length(ListaInicioTarefas,NS),
+		length(ListaFimTarefas,NS),
+		
+		separaTasks(ListaConsumos,_,Tasks,_,ListaInicioTarefas,_,ListaFimTarefas),
+
+		cria_lista_n_escalonavel(LNE),
+		
+		get_pot_max(PotMax),
+		calculaListaEmax(PotMax,PotenciaContratadaRestante,LNE),
+
+
+		escalonamentoPeloCustoMinimo(ListaInicioTarefas,ListaFimTarefas,Tarefas,PotenciaContratadaRestante, Custo).
+
+
+escalonamentoPeloCustoMinimoComPotenciaContratadaRestanteVariavel(ListaInicioTarefas,ListaFimTarefas,Tarefas,ListaPotenciaContratadaRestante, Custo).
+
+
+
+
+calculaListaEmax(PotMax,PotenciaContratadaRestante,[]).
+
+calculaListaEmax(PotMax,PotenciaContratadaRestante,[H|T]):-
+		PotMaxNext is PotMax - H,
+		append(PotenciaContratadaRestante,[PotMaxNext],EMax)
+		calculaEmax(PotMax,EMax,T).
+
+
 	
 mostra_todos_dispositivos:-
 	get_todos_dispositivos(Dispositivos),
