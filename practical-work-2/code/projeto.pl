@@ -86,23 +86,116 @@ settingNotSchedulableTasks([TaskNotSchedulable|Rest],AllTasks,RemainingPowerTime
 */
 
 
+restricaoTempo([],[],_).
+
+%% Para o Baseline
+restricaoTempo([Baseline|NextBase],[LS|NextS],0) :-
+		LS #>=Baseline,
+		restricaoTempo(NextBase,NextS,0).
+
+%% Para o Endline	
+restricaoTempo([Baseline|NextBase],[LS|NextS],1) :-
+		LS #=<Baseline,
+		restricaoTempo(NextBase,NextS,1).
+
+
+
 % ListaInicioTarefas deve já ter as restricoes
 
-escalonamento(Tarefas,ListaInicioTarefas,ListaFimTarefas,ListaConumoTarefas,EnergiaMaximaRestante):-
+
+%ListaInicioTarefas= lista dos tempos iniciais das tarefas em que o primeiro elemento é a tarefa 1( nao implica que seja a primeira tarefa a ser feita)
+%ListaFimTarefas=lista dos tempos finais das tarefas em que o primeiro elemento é a tarefa 1( nao implica que seja a primeira tarefa a ser feita)
+%Tarefas= lista de task(...)
+%PotenciaContratada 
+
+
+%%Sem considerar os não escalonaveis
+escalonamentoPorConsumoEnergetico(ListaInicioTarefas,ListaFimTarefas,Tarefas,PotenciaContratada):-
+
+%passar para uma lista as tasks
+%passar para uma lista o tempo inicial de cada task
+%passar para uma lista o tempo final de cada task
+%passar para uma lista o custo de cada task
 
 		domain(ListaInicioTarefas,0,23),
 		domain(ListaFimTarefas,1,24),
 
-		LimiteEnergetico is 0..EnergiaMaximaRestante,
+		%%fazer as restricoes do tempo 
+		restricaoTempo(ListaInicioTarefas,ListaInicioTarefasRestricoes,0),
+		restricaoTempo(ListaFimTarefas,ListaFimTarefasRestricoes,1),
 
-		cumulatives(Tarefas,limit(LimiteEnergetico)),
+		LimiteEnergetico is 0..PotenciaContratada,
 
-		append(ListaInicioTarefas,ListaFimTarefas, Vars1),
+		cumulative(Tarefas,limit(LimiteEnergetico)),
+
+		append(ListaInicioTarefasRestricoes,ListaFimTarefasRestricoes, Vars1),
 		append(Vars1,[LimiteEnergetico], Vars),
 		
 		labeling([minimize(LimiteEnergetico)],Vars).
 
 
+
+calcula_custo_total(_,[],CustoTotal,CustoTotal).
+calcula_custo_total(LCustos,[task(S,_,_,C,_)|NextTask],CustoActual,CustoTotal) :-
+		element(S,LCustos,Custo),
+		Mult #= Custo*C,
+		CustoActual1 #= CustoActual + Custo*C,
+		calcula_custo_total(LCustos,NextTask,CustoActual1,CustoTotal).
+		
+		
+		
+calcula_soma_custos([],CustoMaximo,CustoMaximo).
+calcula_soma_custos([C|NextC],CustoActual,CustoMaximo) :-
+		CustoActual1 is CustoActual + C,
+		calcula_soma_custos(NextC,CustoActual1,CustoMaximo).
+		
+calcula_consumo_total([],ConsumoTotal,ConsumoTotal).
+calcula_consumo_total([task(_,_,_,C,_)|NextTask],ConsumoActual,ConsumoTotal) :-
+		ConsumoActual1 is ConsumoActual + C,
+		calcula_consumo_total(NextTask,ConsumoActual1,ConsumoTotal).
+		
+min_list([H|T], Min) :-
+    min_list(T, H, Min).
+ 
+min_list([], Min, Min).
+min_list([H|T], Min0, Min) :-
+    Min1 is min(H, Min0),
+    min_list(T, Min1, Min).
+
+
+%%Sem considerar os não escalonaveis
+escalonamentoPeloCustoMinimo(ListaInicioTarefas,ListaFimTarefas,Tarefas, ListaCusto):-
+
+		domain(ListaInicioTarefas,0,23),
+		domain(ListaFimTarefas,1,24),
+
+		%%fazer as restricoes do tempo 
+		restricaoTempo(ListaInicioTarefas,ListaInicioTarefasRestricoes,0),
+		restricaoTempo(ListaFimTarefas,ListaFimTarefasRestricoes,1),
+
+		calcula_soma_custos(ListaCustos,0,CustoMaximo),
+		calcula_consumo_total(Tasks,0,ConsumoTotal),
+		CustoTotal is CustoMaximo * ConsumoTotal,
+		min_list(LCustos,CustoMinimo),
+
+		CustoTotal #= ConsumoCusto,
+
+
+		LimiteEnergetico is 0..ListaCusto,
+
+		cumulative(Tarefas,limit(LimiteEnergetico)),
+
+		CustoLimite in CustoMinimo..CustoTotal,
+
+
+		append(ListaInicioTarefasRestricoes,ListaFimTarefasRestricoes, Vars1),
+		append(Vars1,[CustoLimite], Vars),
+		
+		labeling([minimize(CustoLimite)],Vars).
+
+
+
+		
 
 
 
