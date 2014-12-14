@@ -1,10 +1,8 @@
-
+:-include('listagens.pl').
+%%:-include('conhecimento.pl').
+:-include('escalonamentos.pl').
 :-use_module(library(clpfd)). 
 :-use_module(library(lists)).
-
-:-include('escalonamentos.pl').
-:-include('listagens.pl').
-
 
 :- dynamic escalonavel/3.
 :- dynamic nescalonavel/2.
@@ -20,6 +18,9 @@
 %%%                      %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+intro:-
+
+write('Escalonamento de Dispositivos Consumidores de Energia Elétrica').
 
 start :-
 	write('CONFIGS INICIAIS'),
@@ -89,9 +90,9 @@ menu(4):-
 	divide_tarefas(Duracao, _, Idmaq, _,SubtarefasFinal),
 	write(SubtarefasFinal),
 	
-	assert(tarefa(Nome, Idmaq ,Baseline,Deadline,Duracao, SubtarefasFinal)),
-	write('Tarefa '),write(Nome), write(' de Baseline '), write(Baseline),write(', com Deadline as '),
-	write(Deadline), write(' que dura '), write(Duracao),write(' adicionado com sucesso à base de conhecimento.').
+	assert(tarefa(Nome, Idmaq ,Baseline,Deadline,Duracao, SubtarefasFinal)).
+	%write('Tarefa '),write(Nome), write(' de Baseline '), write(Baseline),write(', com Deadline as ').
+	%write(Deadline), write(' que dura '), write(Duracao),write(' adicionado com sucesso à base de conhecimento.').
 
 divide_tarefas(0, SubtarefasFinal, _, _,SubtarefasFinal).
 divide_tarefas(Duracao, Subtarefas, Idmaq, S1,SubtarefasFinal):-
@@ -182,23 +183,22 @@ menu_disp(1):-
 	write('Nome do Dispositivo:'),read(Nome),
 	write('Id:'),read(Id),
 	write('Recursos Alocados:'), read(X),
-	assert(escalonavel(Nome,Id, X)),
-	write('Dispositivo Escalonável '),write(Nome), write(' com id '), write(Id),write(' adicionado com sucesso à base de conhecimento.').
+	assert(escalonavel(Nome,Id, X)).
+	%write('Dispositivo Escalonável '),write(Nome), write(' com id '), write(Id),write(' adicionado com sucesso à base de conhecimento.').
+	
 	
 menu_disp(2):-
 	write('Adicionar Dispositivo não Escalonável(minusculas e terminado com  \'.\' ):'),nl,
 	write('Nome do Dispositivo:'),read(Nome),
 	write('Consumo:'),read(Consumo),
-	assert(nescalonavel(Nome,Consumo)),
-	write('Dispositivo não Escalonável '),write(Nome), write(' com consumo de '), write(Consumo),write(' adicionado com sucesso à base de conhecimento.').	
-	
-
+	assert(nescalonavel(Nome,Consumo)).
+	%write('Dispositivo não Escalonável '),write(Nome), write(' com consumo de '), write(Consumo),write(' adicionado com sucesso à base de conhecimento.').	
 
 %%-------------------------------------------------------------------------------------------------------------------------------------
 
 %%Menu dos escalonamentos
 
-menu_escal(0):-startmenu.
+menu_escal(0):- startmenu.
 
 
 menu_escal(1):-
@@ -410,8 +410,8 @@ calculaListaEmax(PotMax,PotenciaContratadaRestante,[]).
 
 calculaListaEmax(PotMax,PotenciaContratadaRestante,[H|T]):-
 		PotMaxNext is PotMax - H,
-		append(PotenciaContratadaRestante,[PotMaxNext],EMax)
-		calculaEmax(PotMax,EMax,T).
+		append(PotenciaContratadaRestante,[PotMaxNext],EMax),
+		calculaListaEmax(PotMax,EMax,T).
 
 
 	

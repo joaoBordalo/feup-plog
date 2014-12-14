@@ -1,4 +1,6 @@
-
+:-use_module(library(lists)).
+:-use_module(library(clpfd)). 
+:-include('listagens.pl').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%                      %%%
@@ -146,7 +148,7 @@ escalonamentoPeloCustoMinimo(ListaInicioTarefas,ListaFimTarefas,Tarefas,Potencia
 		minList(ListaCustos,CustoMinimo),
 
 
-		%calculaCustoTotal(LCustos,Tasks,0,ConsumoCusto),
+		calculaCustoTotal(LCustos,Tasks,0,ConsumoCusto),
 		CustoTotal #= ConsumoCusto,
 
 
@@ -219,7 +221,7 @@ escalonamentoPeloCustoMinimoComPotenciaContratadaRestanteVariavel(ListaInicioTar
 		minList(ListaCustos,CustoMinimo),
 
 
-		%calculaCustoTotal(LCustos,Tasks,0,ConsumoCusto),
+		calculaCustoTotal(LCustos,Tasks,0,ConsumoCusto),
 		CustoTotal #= ConsumoCusto,
 
 		minList(ListaPotenciaContratadaRestante,PotenciaContratadaRestante),

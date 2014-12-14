@@ -49,7 +49,7 @@ get_todas_tarefas(_):- write('Nao existem tarefas').
 			findall(Et,subtask(_,_,Et,_,_), LE).
 			
 		cria_lista_machines(Machines,EMax):-
-			findall(machine(Id, EMax), escalonavel(_,Id, Recursos), Machines). 
+			findall(machine(Id, EMax), escalonavel(_,Id, _), Machines). 
 			
 		cria_lista_tasks(Tasks):-
 			findall(task(Start,Dur,End,Consumo,Idmaq), subtask(Start, Dur, End, Consumo, Idmaq), Tasks).
