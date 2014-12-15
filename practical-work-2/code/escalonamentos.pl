@@ -145,7 +145,7 @@ escalonamentoPeloCustoMinimo(ListaInicioTarefas,ListaFimTarefas,Tarefas,Potencia
 		calculaSomaCustos(Custo,0,CustoMaximo),
 		calculaConsumoTotal(Tarefas,0,ConsumoTotal),
 		CustoTotal is CustoMaximo * ConsumoTotal,
-		minList(ListaCustos,CustoMinimo),
+		minList(Custo,CustoMinimo),
 
 
 		calculaCustoTotal(LCustos,Tasks,0,ConsumoCusto),

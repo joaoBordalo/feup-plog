@@ -1,5 +1,4 @@
 :-include('listagens.pl').
-%%:-include('conhecimento.pl').
 :-include('escalonamentos.pl').
 :-use_module(library(clpfd)). 
 :-use_module(library(lists)).
