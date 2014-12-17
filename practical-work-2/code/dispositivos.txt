@@ -1,0 +1,3 @@
+MaquinaDeLavar. 20.
+Televisao. 5.
+Aquecedores. 10.

@@ -45,9 +45,8 @@ nl, intro, nl, nl,
 	write('8 - Limpar Base de Conhecimento'), nl,
 	write('9 - Configurar Preco de Energia'),nl,
 	write('10 - Importar config de preco de energia do ficheiro'),nl,
-	write('11 - Calcular Otimizacao do Custo'),nl,
 	write('0 - Sair'),nl,
-	repeat, read(Op), Op >= 0, Op =< 11,!,
+	repeat, read(Op), Op >= 0, Op =< 10,!,
 	menu(Op), repeat, skip_line, get_code(_), startmenu.
 
 
@@ -58,7 +57,8 @@ abort.
 menu(1):-
 	mostra_todos_dispositivos,
 	nl,	
-	mostra_todas_tarefas.
+	mostra_todas_tarefas,
+	startmenu.
 
 menu(1):-
 	mostra_todos_dispositivos,
@@ -100,7 +100,8 @@ divide_tarefas(Duracao, Subtarefas, Idmaq, S1,SubtarefasFinal):-
 	append(Subtarefas,[Consumo],Subtarefas1),
 	
 	Duracao1 is Duracao - 1,
-	divide_tarefas(Duracao1, Subtarefas1, Idmaq, E1,SubtarefasFinal).
+	divide_tarefas(Duracao1, Subtarefas1, Idmaq, E1,SubtarefasFinal),
+	startmenu.
 	
 
 menu(5):-
@@ -113,7 +114,7 @@ menu(6):-
 	write('Adicionar tarefas do ficheiro (\'root\\\\path\\\\tarefa.txt\'):'),nl,
 	repeat,read(Ficheiro),
 	adiciona_tarefas_do_ficheiro(Ficheiro),
-	!.
+	!,startmenu.
 
 menu(7):-
 	write('1 - Escalonamento Por Consumo Energetico'), nl,
@@ -182,7 +183,8 @@ menu_disp(1):-
 	write('Nome do Dispositivo:'),read(Nome),
 	write('Id:'),read(Id),
 	write('Recursos Alocados:'), read(X),
-	assert(escalonavel(Nome,Id, X)).
+	assert(escalonavel(Nome,Id, X)),
+	startmenu.
 	%write('Dispositivo Escalonável '),write(Nome), write(' com id '), write(Id),write(' adicionado com sucesso à base de conhecimento.').
 	
 	
@@ -190,7 +192,8 @@ menu_disp(2):-
 	write('Adicionar Dispositivo não Escalonável(minusculas e terminado com  \'.\' ):'),nl,
 	write('Nome do Dispositivo:'),read(Nome),
 	write('Consumo:'),read(Consumo),
-	assert(nescalonavel(Nome,Consumo)).
+	assert(nescalonavel(Nome,Consumo)),
+	startmenu.
 	%write('Dispositivo não Escalonável '),write(Nome), write(' com consumo de '), write(Consumo),write(' adicionado com sucesso à base de conhecimento.').	
 
 %%-------------------------------------------------------------------------------------------------------------------------------------
@@ -456,6 +459,7 @@ importar_dispositivos_para_kb([Nome,Consumo|Proximo]):-
 	assert(dispositivo(Nome, Consumo)),
 	write('fez assert'), nl,
 	importar_dispositivos_para_kb(Proximo).
+
 	
 	
 %----------------------------------------------
